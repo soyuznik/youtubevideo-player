@@ -16,4 +16,16 @@ screenshots
 
 
 
+TODO:
+1.make a thread for the unittest class ( so the gui doesnt freeze when you use the search engine)
+2. add changing paths
+3. add exception when downloading for Error 403 forbidden
+4. add app icon
+
+
+
+
+
+
+
 
