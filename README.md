@@ -9,6 +9,7 @@ pip install pytube --upgrade
 ```
 
 if it still doesnt work it needs to be fixed :(
+also you may need to change the code so it works for you just some paths...
 
 screenshots
 ![image](https://user-images.githubusercontent.com/83570527/124261491-866f6c00-db39-11eb-8423-e1290745257c.png)
