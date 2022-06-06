@@ -21,15 +21,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 import time
 import unittest
+import chromedriver_autoinstaller
+chromedriver_autoinstaller.install()
+
 start_time = time.time() # calculating time
 le_link = ""
 link = ""
-global DIRECTORY
-DIRECTORY = r"D:\Music"
-global W_DIRECTORY
-W_DIRECTORY = r"D:\Users\user\PycharmProjects\pythonProject"
-if os.getcwd() != W_DIRECTORY:
-    print("working directory has changed (this may cause errors)")
+
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__() # getting functions from Qwidget
@@ -143,7 +141,7 @@ class MainWindow(QWidget):
         #download init
 
         self.downloadbutton = QPushButton()
-        self.downloadbutton.setIcon(QIcon(r"D:\Users\user\PycharmProjects\pythonProject\downloadicon.jpg"))
+        self.downloadbutton.setIcon(QIcon(fr"{os.getcwd()}/downloadicon.jpg"))
 
 
         #making same size
@@ -171,7 +169,7 @@ class MainWindow(QWidget):
     def selectionChanged(self):
         item = int(self.list.currentRow())
         object = self.list_with_the_items[item]
-        self.path = fr"D:\Music\{self.list_with_the_items[item]}"
+        self.path = f"{os.getcwd()}/data/{self.list_with_the_items[item]}"
         path = self.path
         if self.path != '':
             self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
@@ -206,10 +204,10 @@ class MainWindow(QWidget):
             ######
 
             self.qti = QListWidgetItem
-            files = os.listdir(r"D:\Music")
+            files = os.listdir(fr"{os.getcwd()}/data/")
             for file in files:
                 if self.tmp_first_time == True:
-                    icon = QIcon(r"D:\Users\user\PycharmProjects\pythonProject\icon.jpg")
+                    icon = QIcon(fr"{os.getcwd()}/icon.jpg")
                     self.list_widget = self.qti(icon , f"{str(file)}", self.list)
                     self.list_widget.setBackground(QColor('#A9A9A9'))
                     self.list_with_the_items.append(file)
@@ -278,25 +276,26 @@ class MainWindow(QWidget):
     def _download_thread_target_(self):# python injection XDD
 
         script_to_download_videos = rf'''
-import pytube
-for i in range(10):
-        i = i + 1
-        yt = pytube.YouTube(r"{str(link)}")
-        yt.streams.first().download(r"{DIRECTORY}")
+        import pytube
+        for i in range(10):
+            i = i + 1
+            yt = pytube.YouTube(r"{str(link)}")
+            yt.streams.first().download(fr"{os.getcwd()}")
         '''
         try:
-            data_cache_for_links = open(r"D:\Users\user\PycharmProjects\pythonProject\data_cache_for_links.py", "x")
+            data_cache_for_links = open(fr"{os.getcwd()}/cache/data_cache_for_links.py", "x")
         except:
             pass
         
-        with open(r"D:\Users\user\PycharmProjects\pythonProject\data_cache_for_links.py" , "w") as tar:
+        with open(fr"{os.getcwd()}/cache/data_cache_for_links.py" , "w") as tar:
             tar.write(script_to_download_videos)
 
         tar.close()
         try:
-           os.system(r"python -m data_cache_for_links")
+
+           os.system(fr"cd {os.getcwd()}/cache/data_cache_for_links.py && python -m data_cache_for_links")
         except:
-           os.system(r"python -m data_cache_for_links")
+           os.system(rf"cd {os.getcwd()}/cache/data_cache_for_links.py && python -m data_cache_for_links")
     def download_extract(self):
         global link
         cprint("dialog initialized", "green")
@@ -316,10 +315,9 @@ class SearchEngine(unittest.TestCase):
         # init seach engine
         self.chrome_options = webdriver.ChromeOptions()
         self.chrome_options.add_argument("--start-maximized")
-        self.chrome_options.headless = True
-        PATH = r"D:\Pycharm\PyCharm Community Edition 2020.2.1\chromedriver.exe"
-        self.driver = webdriver.Chrome(
-            executable_path=PATH, chrome_options=self.chrome_options)
+        #self.chrome_options.headless = True
+
+        self.driver = webdriver.Chrome(chrome_options=self.chrome_options)
     def test_Search_with_VideoName(self):
         link_for_driver = "https://www.youtube.com/results?search_query=" + str(le_link)
         self.driver.get(link_for_driver)
@@ -328,7 +326,7 @@ class SearchEngine(unittest.TestCase):
             EC.presence_of_element_located((By.ID, 'thumbnail')))
         except:
             print('thumbnail" --- not found')
-        youtube_first_video_renderer = self.driver.find_element_by_id('thumbnail')
+        youtube_first_video_renderer = self.driver.find_element(By.ID , 'thumbnail')
         global link
         link = youtube_first_video_renderer.get_attribute('href')
         return link
