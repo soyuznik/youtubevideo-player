@@ -1,1 +1,3 @@
-PyQt5 , sys , termcolor , os , threading , selenium , time , unittest
+PyQt5
+termcolor
+selenium
